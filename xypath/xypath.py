@@ -481,6 +481,13 @@ class Bag(CoreBag):
             bag.add(t_cell._cell)
         return bag
 
+    def nonblank(self):
+        """
+        TODO(pwaller): Write test
+        """
+        return self.filter(lambda cell:
+            cell.value is not None and cell.value != "")
+
     def extrude(self, dx, dy):
         """
         Extrude all cells in the bag by (dx, dy), by looking
@@ -609,3 +616,21 @@ class Table(Bag):
         for bag_cell in bag.unordered:
             new_table.add(bag_cell._cell.copy(new_table))
         return new_table
+
+    def range(self, a, b):
+
+        if a.x < b.x:
+            xs = range(a.x, b.x + 1)
+        else:
+            xs = range(a.x, b.x - 1, -1)
+
+        if a.y < b.y:
+            ys = range(a.y, b.y + 1)
+        else:
+            ys = range(a.y, b.y - 1, -1)
+
+        bag = Bag(self)
+        for x in xs:
+            for y in ys:
+                bag |= self.get_at(x, y)
+        return bag
